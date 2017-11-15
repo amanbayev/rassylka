@@ -1,25 +1,62 @@
 import React, { Component } from 'react'
-
-export default class Login extends Component {
+import { withRouter } from 'react-router-dom'
+class Login extends Component {
+  constructor(props) {
+    super(props)
+    this.state= {
+      login: '',
+      password: ''
+    }
+  }
+  handleLoginSubmit(e) {
+    e.preventDefault()
+    let { login, password } = this.state
+    let history = this.props.history
+    Meteor.loginWithPassword(login, password, (error)=> {
+      if (error) {
+        Bert.alert({
+          title: 'Ошибка',
+          message: error.reason,
+          type: 'danger',
+          style: 'growl-top-right',
+          icon: 'fa-cross-o'
+        });
+      } else {
+        Bert.alert({
+          title: 'Успешная авторизация',
+          message: 'Добро пожаловать, ' + Meteor.user().profile.first_name + '!',
+          type: 'success',
+          style: 'growl-top-right',
+          icon: 'fa-check'
+        });
+        console.log(history);
+        console.log('redirecting')
+        history.push('/')
+      }
+      return true
+    })
+  }
   render() {
     return (
       <div className="page login-page">
         <div className="container">
-          <div className="form-outer text-center d-flex align-items-center">
+          <div className="form-outer text-center align-items-center">
             <div className="form-inner">
-              <div className="logo text-uppercase"><span>Kazakh tourism</span><strong className="text-primary">Dashboard</strong></div>
-              <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
-              <form id="login-form" method="post">
+              <div className="logo text-uppercase">РАССЫЛЬ<strong className="text-primary">Щ</strong>ИК</div>
+              <p>Для начала работы пройдите авторизацию.</p>
+              <form id="login-form" method="post" onSubmit={this.handleLoginSubmit.bind(this)}>
                 <div className="form-group">
-                  <label htmlFor="login-username" className="label-custom">User Name</label>
-                  <input id="login-username" type="text" name="loginUsername" required />
+                  <input type="text" value={this.state.login}
+                    onChange={(e)=>{this.setState({login:e.target.value})}}
+                    />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="login-password" className="label-custom">Password</label>
-                  <input id="login-password" type="password" name="loginPassword" required />
-                </div><a id="login" href="index.html" className="btn btn-primary">Login</a>
-                {/* This should be submit button but I replaced it with <a> for demo purposes*/}
-              </form><a href="#" className="forgot-pass">Forgot Password?</a><small>Do not have an account? </small><a href="register.html" className="signup">Signup</a>
+                  <input type="password" value={this.state.password}
+                    onChange={(e)=>{this.setState({password:e.target.value})}}
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">Войти</button>
+              </form><a href="#" className="forgot-pass">Забыли пароль?</a><small>Нет аккаунта? </small><a href="register.html" className="signup">Регистрация</a>
             </div>
             <div className="copyrights text-center">
               <p>Design by <a href="https://bootstrapious.com" className="external">Bootstrapious</a></p>
@@ -31,3 +68,5 @@ export default class Login extends Component {
     )
   }
 }
+
+export default withRouter(Login)
