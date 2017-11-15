@@ -4,12 +4,14 @@ import { withTracker } from 'meteor/react-meteor-data'
 import Landing from '/client/imports/Landing'
 import Authenticated from '/client/imports/Authenticated'
 import Login from '/client/imports/Login'
+import NotFound from '/client/imports/NotFound'
 
 const App = props => (
   <BrowserRouter>
     <Switch>
+      <Route exact path="/login" component={ Login } />
       <Authenticated path="/" component={ Landing } />
-      <Route path="/login" component={ Login } />
+      <Route component={ NotFound } />
     </Switch>
   </BrowserRouter>
 )

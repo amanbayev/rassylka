@@ -7,7 +7,7 @@ export default class Login extends Component {
         <div className="container">
           <div className="form-outer text-center d-flex align-items-center">
             <div className="form-inner">
-              <div className="logo text-uppercase"><span>Bootstrap</span><strong className="text-primary">Dashboard</strong></div>
+              <div className="logo text-uppercase"><span>Kazakh tourism</span><strong className="text-primary">Dashboard</strong></div>
               <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud.</p>
               <form id="login-form" method="post">
                 <div className="form-group">
