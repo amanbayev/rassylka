@@ -6,6 +6,12 @@ import { ContactsCollection } from '/imports/ContactsCollection'
 class ContactsMain extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      isCreatingContact: false,
+      first_name: '',
+      last_name: '',
+      email: ''
+    }
   }
 
   handleContactAdd(e) {
@@ -20,6 +26,88 @@ class ContactsMain extends Component {
       }
       console.log(result)
     });
+  }
+
+  handleContactFormSubmit(e) {
+    e.preventDefault()
+    let { email, first_name, last_name } = this.state
+    let newContact = {
+      email,
+      first_name,
+      last_name
+    }
+    Meteor.call("contacts.add", newContact, function(error, result){
+      if(error){
+        Bert.alert({
+          title: 'Ошибка',
+          message: error.reason,
+          type: 'danger',
+          style: 'growl-top-right',
+          icon: 'fa-cross-o'
+        });
+      }
+      if(result){
+        Bert.alert({
+          title: 'Контакт добавлен',
+          message: newContact.first_name + ' ' + newContact.last_name + ' успешно добавлен в систему!',
+          type: 'success',
+          style: 'growl-top-right',
+          icon: 'fa-users'
+        });
+      }
+    });
+    this.setState({isCreatingContact:false, email: '', first_name:'', last_name:''})
+  }
+
+  renderAddContactsForm() {
+    if (this.state.isCreatingContact) {
+      return (
+        <div className="row" style={{marginTop: '30px'}}>
+          <div className="col-lg-6">
+            <div className="card">
+              <div className="card-header d-flex align-items-center">
+                <h2 className="h5 display display">Добавление нового контакта</h2>
+              </div>
+              <div className="card-body">
+                <p>Заполните сведения о новом контакте.</p>
+                <form onSubmit={this.handleContactFormSubmit.bind(this)}>
+                  <div className="form-group">
+                    <label>Email</label>
+                    <input type="email" placeholder="Email" className="form-control"
+                      value={this.state.email}
+                      onChange={(e)=>(this.setState({email: e.target.value}))}
+                      />
+                  </div>
+                  <div className="form-group">
+                    <label>Имя</label>
+                    <input type="text" placeholder="Имя" className="form-control"
+                      value={this.state.first_name}
+                      onChange={(e)=>(this.setState({first_name: e.target.value}))}
+                      />
+                  </div>
+                  <div className="form-group">
+                    <label>Фамилия</label>
+                    <input type="text" placeholder="Фамилия" className="form-control"
+                      value={this.state.last_name}
+                      onChange={(e)=>(this.setState({last_name: e.target.value}))}
+                      />
+                  </div>
+                  <div className="form-group">
+                    <input type="submit" defaultValue="Добавить" className="btn btn-primary" />
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <button className="btn btn-primary"
+          onClick={(e)=>(this.setState({isCreatingContact: true}))}
+          >Добавить контакт</button>
+      )
+    }
   }
 
   renderContactTable() {
@@ -84,6 +172,7 @@ class ContactsMain extends Component {
                   </div>
                 </div>
               </div>
+              {this.renderAddContactsForm()}
             </div>
           </section>
         </div>
